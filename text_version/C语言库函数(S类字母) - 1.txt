@@ -1,0 +1,1029 @@
+函数名: sbrk  
+功  能: 改变数据段空间位置  
+用  法: char *sbrk(int incr);  
+程序例:  
+
+#include <stdio.h>  
+#include <alloc.h>  
+
+int main(void)  
+{  
+   printf("Changing allocation with sbrk()\n");  
+   printf("Before sbrk() call: %lu bytes free\n",  
+   (unsigned long) coreleft());  
+   sbrk(1000);  
+   printf(" After sbrk() call: %lu bytes free\n",  
+   (unsigned long) coreleft());  
+   return 0;  
+}  
+   
+   
+
+函数名: scanf  
+功  能: 执行格式化输入  
+用  法: int scanf(char *format[,argument,...]);  
+程序例:  
+
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   char label[20];  
+   char name[20];  
+   int entries = 0;  
+   int loop, age;  
+   double salary;  
+
+   struct Entry_struct  
+   {  
+      char  name[20];  
+      int   age;  
+      float salary;  
+   } entry[20];  
+
+/* Input a label as a string of characters restricting to 20 characters */  
+   printf("\n\nPlease enter a label for the chart: ");  
+   scanf("%20s", label);  
+   fflush(stdin);  /* flush the input stream in case of bad input */  
+
+/* Input number of entries as an integer */  
+   printf("How many entries will there be? (less than 20) ");  
+   scanf("%d", &entries);  
+   fflush(stdin);   /* flush the input stream in case of bad input */  
+
+/* input a name restricting input to only letters upper or lower case */  
+   for (loop=0;loop<entries;++loop)  
+   {  
+      printf("Entry %d\n", loop);  
+      printf("  Name   : ");  
+      scanf("%[A-Za-z]", entry[loop].name);  
+      fflush(stdin);  /* flush the input stream in case of bad input */  
+
+/* input an age as an integer */  
+      printf("  Age    : ");  
+      scanf("%d", &entry[loop].age);  
+      fflush(stdin);  /* flush the input stream in case of bad input */  
+
+/* input a salary as a float */  
+      printf("  Salary : ");  
+      scanf("%f", &entry[loop].salary);  
+      fflush(stdin); /* flush the input stream in case of bad input */  
+   }  
+
+/* Input a name, age and salary as a string, integer, and double */  
+   printf("\nPlease enter your name, age and salary\n");  
+   scanf("%20s %d %lf", name, &age, &salary);  
+   
+
+/* Print out the data that was input */  
+   printf("\n\nTable %s\n",label);  
+   printf("Compiled by %s  age %d  $%15.2lf\n", name, age, salary);  
+   printf("-----------------------------------------------------\n");  
+   for (loop=0;loop<entries;++loop)  
+      printf("%4d | %-20s | %5d | %15.2lf\n",  
+         loop + 1,  
+  entry[loop].name,  
+  entry[loop].age,  
+         entry[loop].salary);  
+   printf("-----------------------------------------------------\n");  
+   return 0;  
+}  
+   
+   
+
+函数名: searchpath  
+功  能: 搜索DOS路径  
+用  法: char *searchpath(char *filename);  
+程序例:  
+
+#include <stdio.h>  
+#include <dir.h>  
+
+int main(void)  
+{  
+   char *p;  
+
+   /* Looks for TLINK and returns a pointer  
+      to the path  */  
+   p = searchpath("TLINK.EXE");  
+   printf("Search for TLINK.EXE : %s\n", p);  
+
+   /* Looks for non-existent file  */  
+   p = searchpath("NOTEXIST.FIL");  
+   printf("Search for NOTEXIST.FIL : %s\n", p);  
+
+   return 0;  
+}  
+   
+   
+
+函数名: sector  
+功  能: 画并填充椭圆扇区  
+用  法: void far sector(int x, int y, int stangle, int endangle);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   int midx, midy, i;  
+   int stangle = 45, endangle = 135;  
+   int xrad = 100, yrad = 50;  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   midx = getmaxx() / 2;  
+   midy = getmaxy() / 2;  
+
+   /* loop through the fill patterns */  
+   for (i=EMPTY_FILL; i<USER_FILL; i++)  
+   {  
+      /* set the fill style */  
+      setfillstyle(i, getmaxcolor());  
+
+      /* draw the sector slice */  
+      sector(midx, midy, stangle, endangle, xrad, yrad);  
+
+      getch();  
+   }  
+
+   /* clean up */  
+   closegraph();  
+   return 0;  
+}  
+   
+
+函数名: segread  
+功  能: 读段寄存器值  
+用  法: void segread(struct SREGS *segtbl);  
+程序例:  
+
+#include <stdio.h>  
+#include <dos.h>  
+
+int main(void)  
+{  
+   struct SREGS segs;  
+
+   segread(&segs);  
+   printf("Current segment register settings\n\n");  
+   printf("CS: %X   DS: %X\n", segs.cs, segs.ds);  
+   printf("ES: %X   SS: %X\n", segs.es, segs.ss);  
+
+   return 0;  
+}  
+   
+   
+
+函数名: setactivepage  
+功  能: 设置图形输出活动页  
+用  法: void far setactivepage(int pagenum);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* select a driver and mode that supports */  
+   /* multiple pages.                        */  
+   int gdriver = EGA, gmode = EGAHI, errorcode;  
+   int x, y, ht;  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   x = getmaxx() / 2;  
+   y = getmaxy() / 2;  
+   ht = textheight("W");  
+
+   /*  select the off screen page for drawing */  
+   setactivepage(1);  
+
+   /* draw a line on page #1 */  
+   line(0, 0, getmaxx(), getmaxy());  
+
+   /* output a message on page #1 */  
+   settextjustify(CENTER_TEXT, CENTER_TEXT);  
+   outtextxy(x, y, "This is page #1:");  
+   outtextxy(x, y+ht, "Press any key to halt:");  
+
+   /* select drawing to page #0 */  
+   setactivepage(0);  
+
+   /* output a message  on page #0 */  
+   outtextxy(x, y, "This is page #0.");  
+   outtextxy(x, y+ht, "Press any key to view page #1:");  
+   getch();  
+
+   /* select page #1 as the visible page */  
+   setvisualpage(1);  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: setallpallette  
+功  能: 按指定方式改变所有的调色板颜色  
+用  法: void far setallpallette(struct palette, far *pallette);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   struct palettetype pal;  
+   int color, maxcolor, ht;  
+   int y = 10;  
+   char msg[80];  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   maxcolor = getmaxcolor();  
+   ht = 2 * textheight("W");  
+
+   /* grab a copy of the palette */  
+   getpalette(&pal);  
+
+   /* display the default palette colors */  
+   for (color=1; color<=maxcolor; color++)  
+   {  
+      setcolor(color);  
+      sprintf(msg, "Color: %d", color);  
+      outtextxy(1, y, msg);  
+      y += ht;  
+   }  
+
+   /* wait for a key */  
+   getch();  
+
+   /* black out the colors one by one */  
+   for (color=1; color<=maxcolor; color++)  
+   {  
+      setpalette(color, BLACK);  
+      getch();  
+   }  
+
+   /* restore the palette colors */  
+   setallpalette(&pal);  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: setaspectratio  
+功  能: 设置图形纵横比  
+用  法: void far setaspectratio(int xasp, int yasp);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   int xasp, yasp, midx, midy;  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   midx = getmaxx() / 2;  
+   midy = getmaxy() / 2;  
+   setcolor(getmaxcolor());  
+
+   /* get current aspect ratio settings */  
+   getaspectratio(&xasp, &yasp);  
+
+   /* draw normal circle */  
+   circle(midx, midy, 100);  
+   getch();  
+
+   /* claer the screen */  
+   cleardevice();  
+
+   /* adjust the aspect for a wide circle */  
+   setaspectratio(xasp/2, yasp);  
+   circle(midx, midy, 100);  
+   getch();  
+
+   /* adjust the aspect for a narrow circle */  
+   cleardevice();  
+   setaspectratio(xasp, yasp/2);  
+   circle(midx, midy, 100);  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: setbkcolor  
+功  能: 用调色板设置当前背景颜色  
+用  法: void far setbkcolor(int color);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* select a driver and mode that supports */  
+   /* multiple background colors.            */  
+   int gdriver = EGA, gmode = EGAHI, errorcode;  
+   int bkcol, maxcolor, x, y;  
+   char msg[80];  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   /* maximum color index supported */  
+   maxcolor = getmaxcolor();  
+
+   /* for centering text messages */  
+   settextjustify(CENTER_TEXT, CENTER_TEXT);  
+   x = getmaxx() / 2;  
+   y = getmaxy() / 2;  
+
+   /* loop through the available colors */  
+   for (bkcol=0; bkcol<=maxcolor; bkcol++)  
+   {  
+      /* clear the screen */  
+      cleardevice();  
+
+      /* select a new background color */  
+      setbkcolor(bkcol);  
+
+      /* output a messsage */  
+      if (bkcol == WHITE)  
+  setcolor(EGA_BLUE);  
+      sprintf(msg, "Background color: %d", bkcol);  
+      outtextxy(x, y, msg);  
+      getch();  
+   }  
+
+   /* clean up */  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: setblock  
+功  能: 修改先前已分配的DOS存储段大小  
+用  法: int setblock(int seg, int newsize);  
+程序例:  
+
+#include <dos.h>  
+#include <alloc.h>  
+#include <stdio.h>  
+#include <stdlib.h>  
+
+int main(void)  
+{  
+   unsigned int size, segp;  
+   int stat;  
+
+   size = 64; /* (64 x 16) = 1024 bytes */  
+   stat = allocmem(size, &segp);  
+   if (stat == -1)  
+      printf("Allocated memory at segment: %X\n", segp);  
+   else  
+   {  
+      printf("Failed: maximum number of paragraphs available is %d\n",  
+      stat);  
+      exit(1);  
+   }  
+
+   stat = setblock(segp, size * 2);  
+   if (stat == -1)  
+      printf("Expanded memory block at segment: %X\n", segp);  
+   else  
+      printf("Failed: maximum number of paragraphs available is %d\n",  
+             stat);  
+
+   freemem(segp);  
+
+   return 0;  
+}  
+   
+   
+
+函数名: setbuf  
+功  能: 把缓冲区与流相联  
+用  法: void setbuf(FILE *steam, char *buf);  
+程序例:  
+
+#include <stdio.h>  
+
+/* BUFSIZ is defined in stdio.h */  
+char outbuf[BUFSIZ];  
+
+int main(void)  
+{  
+   /* attach a buffer to the standard output stream */  
+   setbuf(stdout, outbuf);  
+
+   /* put some characters into the buffer */  
+   puts("This is a test of buffered output.\n\n");  
+   puts("This output will go into outbuf\n");  
+   puts("and won't appear until the buffer\n");  
+   puts("fills up or we flush the stream.\n");  
+
+   /* flush the output buffer */  
+   fflush(stdout);  
+
+   return 0;  
+}  
+   
+   
+
+函数名: setcbrk  
+功  能: 设置Control-break  
+用  法: int setcbrk(int value);  
+程序例:  
+
+#include <dos.h>  
+#include <conio.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   int break_flag;  
+
+   printf("Enter 0 to turn control break off\n");  
+   printf("Enter 1 to turn control break on\n");  
+
+   break_flag = getch() - 0;  
+
+   setcbrk(break_flag);  
+
+   if (getcbrk())  
+      printf("Cntrl-brk flag is on\n");  
+   else  
+      printf("Cntrl-brk flag is off\n");  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: setcolor  
+功  能: 设置当前画线颜色  
+用  法: void far setcolor(int color);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* select a driver and mode that supports */  
+   /* multiple drawing colors.               */  
+   int gdriver = EGA, gmode = EGAHI, errorcode;  
+   int color, maxcolor, x, y;  
+   char msg[80];  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   /* maximum color index supported */  
+   maxcolor = getmaxcolor();  
+
+   /* for centering text messages */  
+   settextjustify(CENTER_TEXT, CENTER_TEXT);  
+   x = getmaxx() / 2;  
+   y = getmaxy() / 2;  
+
+   /* loop through the available colors */  
+   for (color=1; color<=maxcolor; color++)  
+   {  
+      /* clear the screen */  
+      cleardevice();  
+
+      /* select a new background color */  
+      setcolor(color);  
+
+      /* output a messsage */  
+      sprintf(msg, "Color: %d", color);  
+      outtextxy(x, y, msg);  
+      getch();  
+   }  
+
+   /* clean up */  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: setdate  
+功  能: 设置DOS日期  
+用  法: void setdate(struct date *dateblk);  
+程序例:  
+
+#include <stdio.h>  
+#include <process.h>  
+#include <dos.h>  
+
+int main(void)  
+{  
+   struct date reset;  
+   struct date save_date;  
+
+   getdate(&save_date);  
+   printf("Original date:\n");  
+   system("date");  
+
+   reset.da_year = 2001;  
+   reset.da_day = 1;  
+   reset.da_mon = 1;  
+   setdate(&reset);  
+
+   printf("Date after setting:\n");  
+   system("date");  
+
+   setdate(&save_date);  
+   printf("Back to original date:\n");  
+   system("date");  
+
+   return 0;  
+}  
+   
+   
+
+函数名: setdisk  
+功  能: 设置当前磁盘驱动器  
+用  法: int setdisk(int drive);  
+程序例:  
+
+#include <stdio.h>  
+#include <dir.h>  
+
+int main(void)  
+{  
+   int save, disk, disks;  
+
+   /* save original drive */  
+   save = getdisk();  
+
+   /* print number of logic drives */  
+   disks = setdisk(save);  
+   printf("%d logical drives on the system\n\n", disks);  
+
+   /* print the drive letters available */  
+   printf("Available drives:\n");  
+   for (disk = 0;disk < 26;++disk)  
+   {  
+      setdisk(disk);  
+      if (disk == getdisk())  
+         printf("%c: drive is available\n", disk + 'a');  
+   }  
+   setdisk(save);  
+
+   return 0;  
+}  
+   
+   
+
+函数名: setdta  
+功  能: 设置磁盘传输区地址  
+用  法: void setdta(char far *dta);  
+程序例:  
+
+#include <process.h>  
+#include <string.h>  
+#include <stdio.h>  
+#include <dos.h>  
+
+int main(void)  
+{  
+   char line[80], far *save_dta;  
+   char buffer[256] = "SETDTA test!";  
+   struct fcb blk;  
+   int result;  
+
+   /* get new file name from user */  
+   printf("Enter a file name to create:");  
+   gets(line);  
+
+   /* parse the new file name to the dta */  
+   parsfnm(line, &blk, 1);  
+   printf("%d %s\n", blk.fcb_drive, blk.fcb_name);  
+
+   /* request DOS services to create file */  
+   if (bdosptr(0x16, &blk, 0) == -1)  
+   {  
+      perror("Error creating file");  
+      exit(1);  
+   }  
+
+   /* save old dta and set new dta */  
+   save_dta = getdta();  
+   setdta(buffer);  
+
+   /* write new records */  
+   blk.fcb_recsize = 256;  
+   blk.fcb_random = 0L;  
+   result = randbwr(&blk, 1);  
+   printf("result = %d\n", result);  
+
+   if (!result)  
+      printf("Write OK\n");  
+   else  
+   {  
+      perror("Disk error");  
+      exit(1);  
+   }  
+
+   /* request DOS services to close the file */  
+   if (bdosptr(0x10, &blk, 0) == -1)  
+   {  
+      perror("Error closing file");  
+      exit(1);  
+   }  
+
+   /* reset the old dta */  
+   setdta(save_dta);  
+   return 0;  
+}  
+   
+   
+
+函数名: setfillpattern  
+功  能: 选择用户定义的填充模式  
+用  法: void far setfillpattern(char far *upattern, int color);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   int maxx, maxy;  
+
+   /* a user defined fill pattern */  
+   char pattern[8] = {0x00, 0x70, 0x20, 0x27, 0x24, 0x24, 0x07, 0x00};  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   maxx = getmaxx();  
+   maxy = getmaxy();  
+   setcolor(getmaxcolor());  
+
+   /* select a user defined fill pattern */  
+   setfillpattern(pattern, getmaxcolor());  
+
+   /* fill the screen with the pattern */  
+   bar(0, 0, maxx, maxy);  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: setfillstyle  
+功  能: 设置填充模式和颜色  
+用  法: void far setfillstyle(int pattern, int color);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <string.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+/* the names of the fill styles supported */  
+char *fname[] = { "EMPTY_FILL",  
+                  "SOLID_FILL",  
+                  "LINE_FILL",  
+                  "LTSLASH_FILL",  
+                  "SLASH_FILL",  
+                  "BKSLASH_FILL",  
+                  "LTBKSLASH_FILL",  
+    "HATCH_FILL",  
+                  "XHATCH_FILL",  
+                  "INTERLEAVE_FILL",  
+                  "WIDE_DOT_FILL",  
+                  "CLOSE_DOT_FILL",  
+    "USER_FILL"  
+                };  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   int style, midx, midy;  
+   char stylestr[40];  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   midx = getmaxx() / 2;  
+   midy = getmaxy() / 2;  
+
+   for (style = EMPTY_FILL; style < USER_FILL; style++)  
+   {  
+      /* select the fill style */  
+      setfillstyle(style, getmaxcolor());  
+
+      /* convert style into a string */  
+      strcpy(stylestr, fname[style]);  
+
+      /* fill a bar */  
+      bar3d(0, 0, midx-10, midy, 0, 0);  
+
+      /* output a message */  
+      outtextxy(midx, midy, stylestr);  
+
+      /* wait for a key */  
+      getch();  
+      cleardevice();  
+   }  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: setftime  
+功  能: 设置文件日期和时间  
+用  法: int setftime(int handle, struct ftime *ftimep);  
+程序例:  
+
+#include <stdio.h>  
+#include <process.h>  
+#include <fcntl.h>  
+#include <io.h>  
+
+int main(void)  
+{  
+   struct ftime filet;  
+   FILE *fp;  
+
+   if ((fp = fopen("TEST.$$$", "w")) == NULL)  
+   {  
+      perror("Error:");  
+      exit(1);  
+   }  
+
+   fprintf(fp, "testing...\n");  
+
+   /* load ftime structure with new time and date */  
+   filet.ft_tsec = 1;  
+   filet.ft_min = 1;  
+   filet.ft_hour = 1;  
+   filet.ft_day = 1;  
+   filet.ft_month = 1;  
+   filet.ft_year = 21;  
+
+   /* show current directory for time and date */  
+   system("dir TEST.$$$");  
+
+   /* change the time and date stamp*/  
+   setftime(fileno(fp), &filet);  
+
+   /* close and remove the temporary file */  
+   fclose(fp);  
+
+   system("dir TEST.$$$");  
+
+   unlink("TEST.$$$");  
+   return 0;  
+}  
+   
+   
+
+函数名: setgraphbufsize  
+功  能: 改变内部图形缓冲区的大小  
+用  法: unsigned far setgraphbufsize(unsigned bufsize);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+#define BUFSIZE 1000 /* internal graphics buffer size */  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   int x, y, oldsize;  
+   char msg[80];  
+
+   /* set the size of the internal graphics buffer */  
+   /* before making a call to initgraph.           */  
+   oldsize = setgraphbufsize(BUFSIZE);  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   x = getmaxx() / 2;  
+   y = getmaxy() / 2;  
+
+   /* output some messages */  
+   sprintf(msg, "Graphics buffer size: %d", BUFSIZE);  
+   settextjustify(CENTER_TEXT, CENTER_TEXT);  
+   outtextxy(x, y, msg);  
+   sprintf(msg, "Old graphics buffer size: %d", oldsize);  
+   outtextxy(x, y+textheight("W"), msg);  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: setgraphmode  
+功  能: 将系统设置成图形模式且清屏  
+用  法: void far setgraphmode(int mode);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   int x, y;  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   x = getmaxx() / 2;  
+   y = getmaxy() / 2;  
+
+   /* output a message */  
+   settextjustify(CENTER_TEXT, CENTER_TEXT);  
+   outtextxy(x, y, "Press any key to exit graphics:");  
+   getch();  
+
+   /* restore system to text mode */  
+   restorecrtmode();  
+   printf("We're now in text mode.\n");  
+   printf("Press any key to return to graphics mode:");  
+   getch();  
+
+   /* return to graphics mode */  
+   setgraphmode(getgraphmode());  
+
+   /* output a message */  
+   settextjustify(CENTER_TEXT, CENTER_TEXT);  
+   outtextxy(x, y, "We're back in graphics mode.");  
+   outtextxy(x, y+textheight("W"), "Press any key to halt:");  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  

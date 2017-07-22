@@ -1,0 +1,1001 @@
+函数名: sound  
+功  能: 以指定频率打开PC扬声器  
+用  法: void sound(unsigned frequency);  
+程序例:  
+
+/* Emits a 7-Hz tone for 10 seconds.  
+   Your PC may not be able to emit a 7-Hz tone. */  
+#include <dos.h>  
+
+int main(void)  
+{  
+   sound(7);  
+   delay(10000);  
+   nosound();  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: spawnl  
+功  能: 创建并运行子程序  
+用  法: int spawnl(int mode, char *pathname, char *arg0,  
+     arg1, ... argn, NULL);  
+程序例:  
+
+#include <process.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   int result;  
+
+   clrscr();  
+   result = spawnl(P_WAIT, "tcc.exe", NULL);  
+   if (result == -1)  
+   {  
+      perror("Error from spawnl");  
+      exit(1);  
+   }  
+   return 0;  
+}  
+   
+   
+
+函数名: spawnle  
+功  能: 创建并运行子程序  
+用  法: int spawnle(int mode, char *pathname, char *arg0,  
+      arg1,..., argn, NULL);  
+程序例:  
+
+/* spawnle() example */  
+
+#include <process.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   int result;  
+
+   clrscr();  
+   result = spawnle(P_WAIT, "tcc.exe", NULL, NULL);  
+   if (result == -1)  
+   {  
+      perror("Error from spawnle");  
+      exit(1);  
+   }  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: sprintf  
+功  能: 送格式化输出到字符串中  
+用  法: int sprintf(char *string, char *farmat [,argument,...]);  
+程序例:  
+
+#include <stdio.h>  
+#include <math.h>  
+
+int main(void)  
+{  
+   char buffer[80];  
+
+   sprintf(buffer, "An approximation of Pi is %f\n", M_PI);  
+   puts(buffer);  
+   return 0;  
+}  
+   
+   
+
+函数名: sqrt  
+功  能: 计算平方根  
+用  法: double sqrt(double x);  
+程序例:  
+
+#include <math.h>  
+ #include <stdio.h>  
+
+ int main(void)  
+ {  
+    double x = 4.0, result;  
+
+    result = sqrt(x);  
+    printf("The square root of %lf is %lf\n", x, result);  
+    return 0;  
+}  
+   
+
+函数名: srand  
+功  能: 初始化随机数发生器  
+用  法: void srand(unsigned seed);  
+程序例:  
+
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <time.h>  
+
+int main(void)  
+{  
+   int i;  
+   time_t t;  
+
+   srand((unsigned) time(&t));  
+   printf("Ten random numbers from 0 to 99\n\n");  
+   for(i=0; i<10; i++)  
+       printf("%d\n", rand() % 100);  
+   return 0;  
+}  
+   
+   
+
+函数名: sscanf  
+功  能: 执行从字符串中的格式化输入  
+用  法: int sscanf(char *string, char *format[,argument,...]);  
+程序例:  
+
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   char label[20];  
+   char name[20];  
+   int entries = 0;  
+   int loop, age;  
+   double salary;  
+
+   struct Entry_struct  
+   {  
+      char  name[20];  
+      int   age;  
+      float salary;  
+   } entry[20];  
+
+/* Input a label as a string of characters restricting to 20 characters */  
+   printf("\n\nPlease enter a label for the chart: ");  
+   scanf("%20s", label);  
+   fflush(stdin);  /* flush the input stream in case of bad input */  
+
+/* Input number of entries as an integer */  
+   printf("How many entries will there be? (less than 20) ");  
+   scanf("%d", &entries);  
+   fflush(stdin);   /* flush the input stream in case of bad input */  
+
+/* input a name restricting input to only letters upper or lower case */  
+   for (loop=0;loop<entries;++loop)  
+   {  
+      printf("Entry %d\n", loop);  
+      printf("  Name   : ");  
+      scanf("%[A-Za-z]", entry[loop].name);  
+      fflush(stdin);  /* flush the input stream in case of bad input */  
+
+/* input an age as an integer */  
+      printf("  Age    : ");  
+      scanf("%d", &entry[loop].age);  
+      fflush(stdin);  /* flush the input stream in case of bad input */  
+
+/* input a salary as a float */  
+      printf("  Salary : ");  
+      scanf("%f", &entry[loop].salary);  
+      fflush(stdin); /* flush the input stream in case of bad input */  
+   }  
+
+/* Input a name, age and salary as a string, integer, and double */  
+   printf("\nPlease enter your name, age and salary\n");  
+   scanf("%20s %d %lf", name, &age, &salary);  
+   
+
+/* Print out the data that was input */  
+   printf("\n\nTable %s\n",label);  
+   printf("Compiled by %s  age %d  $%15.2lf\n", name, age, salary);  
+   printf("-----------------------------------------------------\n");  
+   for (loop=0;loop<entries;++loop)  
+      printf("%4d | %-20s | %5d | %15.2lf\n",  
+         loop + 1,  
+  entry[loop].name,  
+  entry[loop].age,  
+  entry[loop].salary);  
+   printf("-----------------------------------------------------\n");  
+   return 0;  
+}  
+   
+   
+
+函数名: stat  
+功  能: 读取打开文件信息  
+用  法: int stat(char *pathname, struct stat *buff);  
+程序例:  
+
+#include <sys\stat.h>  
+#include <stdio.h>  
+#include <time.h>  
+
+#define FILENAME "TEST.$$$"  
+
+int main(void)  
+{  
+   struct stat statbuf;  
+   FILE *stream;  
+
+   /* open a file for update */  
+   if ((stream = fopen(FILENAME, "w+")) == NULL)  
+   {  
+      fprintf(stderr, "Cannot open output file.\n");  
+      return(1);  
+   }  
+
+   /* get information about the file */  
+   stat(FILENAME, &statbuf);  
+
+   fclose(stream);  
+
+   /* display the information returned */  
+   if (statbuf.st_mode & S_IFCHR)  
+      printf("Handle refers to a device.\n");  
+   if (statbuf.st_mode & S_IFREG)  
+      printf("Handle refers to an ordinary file.\n");  
+   if (statbuf.st_mode & S_IREAD)  
+      printf("User has read permission on file.\n");  
+   if (statbuf.st_mode & S_IWRITE)  
+      printf("User has write permission on file.\n");  
+
+   printf("Drive letter of file: %c\n", 'A'+statbuf.st_dev);  
+   printf("Size of file in bytes: %ld\n", statbuf.st_size);  
+   printf("Time file last opened: %s\n", ctime(&statbuf.st_ctime));  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: _status87  
+功  能: 取浮点状态  
+用  法: unsigned int _status87(void);  
+程序例:  
+
+#include <stdio.h>  
+#include <float.h>  
+
+int main(void)  
+{  
+   float x;  
+   double y = 1.5e-100;  
+
+   printf("Status 87 before error: %x\n", _status87());  
+
+   x = y;  /* <-- force an error to occur */  
+   y = x;  
+
+   printf("Status 87 after error : %x\n", _status87());  
+   return 0;  
+}  
+   
+   
+
+函数名: stime  
+功  能: 设置时间  
+用  法: int stime(long *tp);  
+程序例:  
+
+#include <stdio.h>  
+#include <time.h>  
+#include <dos.h>  
+
+int main(void)  
+{  
+   time_t t;  
+   struct tm *area;  
+
+   t = time(NULL);  
+   area = localtime(&t);  
+   printf("Number of seconds since 1/1/1970 is: %ld\n", t);  
+   printf("Local time is: %s", asctime(area));  
+
+   t++;  
+   area = localtime(&t);  
+   printf("Add a second:  %s", asctime(area));  
+
+   t += 60;  
+   area = localtime(&t);  
+   printf("Add a minute:  %s", asctime(area));  
+
+   t += 3600;  
+   area = localtime(&t);  
+   printf("Add an hour:   %s", asctime(area));  
+
+   t += 86400L;  
+   area = localtime(&t);  
+   printf("Add a day:     %s", asctime(area));  
+
+   t += 2592000L;  
+   area = localtime(&t);  
+   printf("Add a month:   %s", asctime(area));  
+
+   t += 31536000L;  
+   area = localtime(&t);  
+   printf("Add a year:    %s", asctime(area));  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: stpcpy  
+功  能: 拷贝一个字符串到另一个  
+用  法: char *stpcpy(char *destin, char *source);  
+程序例:  
+
+#include <stdio.h>  
+#include <string.h>  
+
+int main(void)  
+{  
+   char string[10];  
+   char *str1 = "abcdefghi";  
+
+   stpcpy(string, str1);  
+   printf("%s\n", string);  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: strcat  
+功  能: 字符串拼接函数  
+用  法: char *strcat(char *destin, char *source);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   char destination[25];  
+   char *blank = " ", *c = "C++", *Borland = "Borland";  
+
+   strcpy(destination, Borland);  
+   strcat(destination, blank);  
+   strcat(destination, c);  
+
+   printf("%s\n", destination);  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: strchr  
+功  能: 在一个串中查找给定字符的第一个匹配之处\  
+用  法: char *strchr(char *str, char c);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int main(void)  
+ {  
+    char string[15];  
+    char *ptr, c = 'r';  
+
+    strcpy(string, "This is a string");  
+    ptr = strchr(string, c);  
+    if (ptr)  
+       printf("The character %c is at position: %d\n", c, ptr-string);  
+    else  
+       printf("The character was not found\n");  
+    return 0;  
+ }  
+   
+   
+   
+
+函数名: strcmp  
+功  能: 串比较  
+用  法: int strcmp(char *str1, char *str2);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int main(void)  
+ {  
+    char *buf1 = "aaa", *buf2 = "bbb", *buf3 = "ccc";  
+    int ptr;  
+
+    ptr = strcmp(buf2, buf1);  
+    if (ptr > 0)  
+       printf("buffer 2 is greater than buffer 1\n");  
+    else  
+       printf("buffer 2 is less than buffer 1\n");  
+
+    ptr = strcmp(buf2, buf3);  
+    if (ptr > 0)  
+       printf("buffer 2 is greater than buffer 3\n");  
+    else  
+       printf("buffer 2 is less than buffer 3\n");  
+
+    return 0;  
+ }  
+   
+   
+   
+
+函数名: strncmpi  
+功  能: 将一个串中的一部分与另一个串比较, 不管大小写  
+用  法: int strncmpi(char *str1, char *str2, unsigned maxlen);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   char *buf1 = "BBB", *buf2 = "bbb";  
+   int ptr;  
+
+   ptr = strcmpi(buf2, buf1);  
+
+   if (ptr > 0)  
+      printf("buffer 2 is greater than buffer 1\n");  
+
+   if (ptr < 0)  
+      printf("buffer 2 is less than buffer 1\n");  
+
+   if (ptr == 0)  
+      printf("buffer 2 equals buffer 1\n");  
+
+   return 0;  
+}  
+   
+   
+   
+
+函数名: strcpy  
+功  能: 串拷贝  
+用  法: char *strcpy(char *str1, char *str2);  
+程序例:  
+
+#include <stdio.h>  
+#include <string.h>  
+
+int main(void)  
+ {  
+    char string[10];  
+    char *str1 = "abcdefghi";  
+
+    strcpy(string, str1);  
+    printf("%s\n", string);  
+    return 0;  
+ }  
+   
+   
+   
+
+函数名: strcspn  
+功  能: 在串中查找第一个给定字符集内容的段  
+用  法: int strcspn(char *str1, char *str2);  
+程序例:  
+
+#include <stdio.h>  
+#include <string.h>  
+#include <alloc.h>  
+
+int main(void)  
+ {  
+    char *string1 = "1234567890";  
+    char *string2 = "747DC8";  
+    int length;  
+
+    length = strcspn(string1, string2);  
+    printf("Character where strings intersect is at position %d\n", length);  
+
+    return 0;  
+ }  
+   
+   
+   
+
+函数名: strdup  
+功  能: 将串拷贝到新建的位置处  
+用  法: char *strdup(char *str);  
+程序例:  
+
+#include <stdio.h>  
+#include <string.h>  
+#include <alloc.h>  
+
+int main(void)  
+ {  
+    char *dup_str, *string = "abcde";  
+
+    dup_str = strdup(string);  
+    printf("%s\n", dup_str);  
+    free(dup_str);  
+
+    return 0;  
+ }  
+   
+   
+   
+
+函数名: stricmp  
+功  能: 以大小写不敏感方式比较两个串  
+用  法: int stricmp(char *str1, char *str2);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   char *buf1 = "BBB", *buf2 = "bbb";  
+   int ptr;  
+
+   ptr = stricmp(buf2, buf1);  
+
+   if (ptr > 0)  
+      printf("buffer 2 is greater than buffer 1\n");  
+
+   if (ptr < 0)  
+      printf("buffer 2 is less than buffer 1\n");  
+
+   if (ptr == 0)  
+      printf("buffer 2 equals buffer 1\n");  
+
+   return 0;  
+}  
+   
+   
+
+函数名: strerror  
+功  能: 返回指向错误信息字符串的指针  
+用  法: char *strerror(int errnum);  
+程序例:  
+
+#include <stdio.h>  
+#include <errno.h>  
+
+int main(void)  
+{  
+   char *buffer;  
+   buffer = strerror(errno);  
+   printf("Error: %s\n", buffer);  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: strcmpi  
+功  能: 将一个串与另一个比较, 不管大小写  
+用  法: int strcmpi(char *str1, char *str2);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   char *buf1 = "BBB", *buf2 = "bbb";  
+   int ptr;  
+
+   ptr = strcmpi(buf2, buf1);  
+
+   if (ptr > 0)  
+      printf("buffer 2 is greater than buffer 1\n");  
+
+   if (ptr < 0)  
+      printf("buffer 2 is less than buffer 1\n");  
+
+   if (ptr == 0)  
+      printf("buffer 2 equals buffer 1\n");  
+
+   return 0;  
+}  
+   
+   
+   
+
+函数名: strncmp  
+功  能: 串比较  
+用  法: int strncmp(char *str1, char *str2, int maxlen);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int  main(void)  
+
+{  
+   char *buf1 = "aaabbb", *buf2 = "bbbccc", *buf3 = "ccc";  
+   int ptr;  
+
+   ptr = strncmp(buf2,buf1,3);  
+   if (ptr > 0)  
+      printf("buffer 2 is greater than buffer 1\n");  
+   else  
+      printf("buffer 2 is less than buffer 1\n");  
+
+   ptr = strncmp(buf2,buf3,3);  
+   if (ptr > 0)  
+      printf("buffer 2 is greater than buffer 3\n");  
+   else  
+      printf("buffer 2 is less than buffer 3\n");  
+
+   return(0);  
+}  
+   
+   
+
+函数名: strncmpi  
+功  能: 把串中的一部分与另一串中的一部分比较, 不管大小写  
+用  法: int strncmpi(char *str1, char *str2);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   char *buf1 = "BBBccc", *buf2 = "bbbccc";  
+   int ptr;  
+
+   ptr = strncmpi(buf2,buf1,3);  
+
+   if (ptr > 0)  
+      printf("buffer 2 is greater than buffer 1\n");  
+
+   if (ptr < 0)  
+      printf("buffer 2 is less than buffer 1\n");  
+
+   if (ptr == 0)  
+      printf("buffer 2 equals buffer 1\n");  
+
+   return 0;  
+}  
+   
+   
+
+函数名: strncpy  
+功  能: 串拷贝  
+用  法: char *strncpy(char *destin, char *source, int maxlen);  
+程序例:  
+
+#include <stdio.h>  
+#include <string.h>  
+
+int main(void)  
+{  
+   char string[10];  
+   char *str1 = "abcdefghi";  
+
+   strncpy(string, str1, 3);  
+   string[3] = '\0';  
+   printf("%s\n", string);  
+   return 0;  
+}  
+   
+   
+
+函数名: strnicmp  
+功  能: 不注重大小写地比较两个串  
+用  法: int strnicmp(char *str1, char *str2, unsigned maxlen);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   char *buf1 = "BBBccc", *buf2 = "bbbccc";  
+   int ptr;  
+
+   ptr = strnicmp(buf2, buf1, 3);  
+
+   if (ptr > 0)  
+      printf("buffer 2 is greater than buffer 1\n");  
+
+   if (ptr < 0)  
+      printf("buffer 2 is less than buffer 1\n");  
+
+   if (ptr == 0)  
+      printf("buffer 2 equals buffer 1\n");  
+
+   return 0;  
+}  
+   
+   
+   
+
+函数名: strnset  
+功  能: 将一个串中的所有字符都设为指定字符  
+用  法: char *strnset(char *str, char ch, unsigned n);  
+程序例:  
+
+#include <stdio.h>  
+#include <string.h>  
+
+int main(void)  
+{  
+   char *string = "abcdefghijklmnopqrstuvwxyz";  
+   char letter = 'x';  
+
+   printf("string before strnset: %s\n", string);  
+   strnset(string, letter, 13);  
+   printf("string after  strnset: %s\n", string);  
+
+   return 0;  
+}  
+   
+   
+
+函数名: strpbrk  
+功  能: 在串中查找给定字符集中的字符  
+用  法: char *strpbrk(char *str1, char *str2);  
+程序例:  
+
+#include <stdio.h>  
+#include <string.h>  
+
+int main(void)  
+{  
+   char *string1 = "abcdefghijklmnopqrstuvwxyz";  
+   char *string2 = "onm";  
+   char *ptr;  
+
+   ptr = strpbrk(string1, string2);  
+
+   if (ptr)  
+      printf("strpbrk found first character: %c\n", *ptr);  
+   else  
+      printf("strpbrk didn't find character in set\n");  
+
+   return 0;  
+}  
+   
+   
+   
+
+函数名: strrchr  
+功  能: 在串中查找指定字符的最后一个出现  
+用  法: char *strrchr(char *str, char c);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   char string[15];  
+   char *ptr, c = 'r';  
+
+   strcpy(string, "This is a string");  
+   ptr = strrchr(string, c);  
+   if (ptr)  
+      printf("The character %c is at position: %d\n", c, ptr-string);  
+   else  
+      printf("The character was not found\n");  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: strrev  
+功  能: 串倒转  
+用  法: char *strrev(char *str);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   char *forward = "string";  
+
+   printf("Before strrev(): %s\n", forward);  
+   strrev(forward);  
+   printf("After strrev():  %s\n", forward);  
+   return 0;  
+}  
+   
+
+函数名: strset  
+功  能: 将一个串中的所有字符都设为指定字符  
+用  法: char *strset(char *str, char c);  
+程序例:  
+
+#include <stdio.h>  
+#include <string.h>  
+
+int main(void)  
+{  
+   char string[10] = "123456789";  
+   char symbol = 'c';  
+
+   printf("Before strset(): %s\n", string);  
+   strset(string, symbol);  
+   printf("After strset():  %s\n", string);  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: strspn  
+功  能: 在串中查找指定字符集的子集的第一次出现  
+用  法: int strspn(char *str1, char *str2);  
+程序例:  
+
+#include <stdio.h>  
+#include <string.h>  
+#include <alloc.h>  
+
+int main(void)  
+{  
+   char *string1 = "1234567890";  
+   char *string2 = "123DC8";  
+   int length;  
+
+   length = strspn(string1, string2);  
+   printf("Character where strings differ is at position %d\n", length);  
+   return 0;  
+}  
+   
+   
+
+函数名: strstr  
+功  能: 在串中查找指定字符串的第一次出现  
+用  法: char *strstr(char *str1, char *str2);  
+程序例:  
+
+#include <stdio.h>  
+#include <string.h>  
+
+int main(void)  
+{  
+   char *str1 = "Borland International", *str2 = "nation", *ptr;  
+
+   ptr = strstr(str1, str2);  
+   printf("The substring is: %s\n", ptr);  
+   return 0;  
+}  
+   
+   
+
+函数名: strtod  
+功  能: 将字符串转换为double型值  
+用  法: double strtod(char *str, char **endptr);  
+程序例:  
+
+#include <stdio.h>  
+#include <stdlib.h>  
+
+int main(void)  
+{  
+   char input[80], *endptr;  
+   double value;  
+
+   printf("Enter a floating point number:");  
+   gets(input);  
+   value = strtod(input, &endptr);  
+   printf("The string is %s the number is %lf\n", input, value);  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: strtok  
+功  能: 查找由在第二个串中指定的分界符分隔开的单词  
+用  法: char *strtok(char *str1, char *str2);  
+程序例:  
+
+#include <string.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   char input[16] = "abc,d";  
+   char *p;  
+
+   /* strtok places a NULL terminator  
+   in front of the token, if found */  
+   p = strtok(input, ",");  
+   if (p)   printf("%s\n", p);  
+
+   /* A second call to strtok using a NULL  
+   as the first parameter returns a pointer  
+   to the character following the token  */  
+   p = strtok(NULL, ",");  
+   if (p)   printf("%s\n", p);  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: strtol  
+功  能: 将串转换为长整数  
+用  法: long strtol(char *str, char **endptr, int base);  
+程序例:  
+
+#include <stdlib.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   char *string = "87654321", *endptr;  
+   long lnumber;  
+
+   /* strtol converts string to long integer  */  
+   lnumber = strtol(string, &endptr, 10);  
+   printf("string = %s  long = %ld\n", string, lnumber);  
+
+   return 0;  
+}  
+   
+
+函数名: strupr  
+功  能: 将串中的小写字母转换为大写字母  
+用  法: char *strupr(char *str);  
+程序例:  
+
+#include <stdio.h>  
+#include <string.h>  
+
+int main(void)  
+{  
+   char *string = "abcdefghijklmnopqrstuvwxyz", *ptr;  
+
+   /* converts string to upper case characters */  
+   ptr = strupr(string);  
+   printf("%s\n", ptr);  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: swab  
+功  能: 交换字节  
+用  法: void swab (char *from, char *to, int nbytes);  
+程序例:  
+
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <string.h>  
+
+char source[15] = "rFna koBlrna d";  
+char target[15];  
+
+int main(void)  
+{  
+   swab(source, target, strlen(source));  
+   printf("This is target: %s\n", target);  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: system  
+功  能: 发出一个DOS命令  
+用  法: int system(char *command);  
+程序例:  
+
+#include <stdlib.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   printf("About to spawn command.com and run a DOS command\n");  
+   system("dir");  
+   return 0;  
+}  

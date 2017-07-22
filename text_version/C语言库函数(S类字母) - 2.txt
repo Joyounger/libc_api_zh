@@ -1,0 +1,994 @@
+函数名: setjmp  
+功  能: 非局部转移  
+用  法: int setjmp(jmp_buf env);  
+程序例:  
+
+#include <stdio.h>  
+#include <process.h>  
+#include <setjmp.h>  
+
+void subroutine(void);  
+
+jmp_buf jumper;  
+
+int main(void)  
+{  
+   int value;  
+
+   value = setjmp(jumper);  
+   if (value != 0)  
+   {  
+      printf("Longjmp with value %d\n", value);  
+      exit(value);  
+   }  
+   printf("About to call subroutine ... \n");  
+   subroutine();  
+   return 0;  
+}  
+
+void subroutine(void)  
+{  
+   longjmp(jumper,1);  
+}  
+   
+   
+
+函数名: setlinestyle  
+功  能: 设置当前画线宽度和类型  
+用  法: void far setlinestyle(int linestype, unsigned upattern);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <string.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+/* the names of the line styles supported */  
+char *lname[] = {  
+   "SOLID_LINE",  
+   "DOTTED_LINE",  
+   "CENTER_LINE",  
+   "DASHED_LINE",  
+   "USERBIT_LINE"  
+   };  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+
+   int style, midx, midy, userpat;  
+   char stylestr[40];  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   midx = getmaxx() / 2;  
+   midy = getmaxy() / 2;  
+
+   /* a user defined line pattern */  
+   /* binary: "0000000000000001"  */  
+   userpat = 1;  
+
+   for (style=SOLID_LINE; style<=USERBIT_LINE; style++)  
+   {  
+      /* select the line style */  
+      setlinestyle(style, userpat, 1);  
+
+      /* convert style into a string */  
+      strcpy(stylestr, lname[style]);  
+
+      /* draw a line */  
+      line(0, 0, midx-10, midy);  
+
+      /* draw a rectangle */  
+      rectangle(0, 0, getmaxx(), getmaxy());  
+
+      /* output a message */  
+      outtextxy(midx, midy, stylestr);  
+
+      /* wait for a key */  
+      getch();  
+      cleardevice();  
+   }  
+
+   /* clean up */  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: setmem  
+功  能: 存值到存储区  
+用  法: void setmem(void *addr, int len, char value);  
+程序例:  
+
+#include <stdio.h>  
+#include <alloc.h>  
+#include <mem.h>  
+
+int main(void)  
+{  
+   char *dest;  
+
+   dest = calloc(21, sizeof(char));  
+   setmem(dest, 20, 'c');  
+   printf("%s\n", dest);  
+
+   return 0;  
+}  
+   
+   
+   
+
+函数名: setmode  
+功  能: 设置打开文件方式  
+用  法: int setmode(int handle, unsigned mode);  
+程序例:  
+
+#include <stdio.h>  
+#include <fcntl.h>  
+#include <io.h>  
+
+int main(void)  
+{  
+   int result;  
+
+   result = setmode(fileno(stdprn), O_TEXT);  
+   if (result == -1)  
+      perror("Mode not available\n");  
+   else  
+      printf("Mode successfully switched\n");  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: setpalette  
+功  能: 改变调色板的颜色  
+用  法: void far setpalette(int index, int actural_color);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   int color, maxcolor, ht;  
+   int y = 10;  
+   char msg[80];  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   maxcolor = getmaxcolor();  
+   ht = 2 * textheight("W");  
+
+   /* display the default colors */  
+   for (color=1; color<=maxcolor; color++)  
+   {  
+      setcolor(color);  
+      sprintf(msg, "Color: %d", color);  
+      outtextxy(1, y, msg);  
+      y += ht;  
+   }  
+
+   /* wait for a key */  
+   getch();  
+
+   /* black out the colors one by one */  
+   for (color=1; color<=maxcolor; color++)  
+   {  
+      setpalette(color, BLACK);  
+      getch();  
+   }  
+
+   /* clean up */  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: setrgbpalette  
+功  能: 定义IBM8514图形卡的颜色  
+用  法: void far setrgbpalette(int colornum, int red, int green, int blue);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* select a driver and mode that supports the use */  
+   /* of the setrgbpalette function.                 */  
+   int gdriver = VGA, gmode = VGAHI, errorcode;  
+   struct palettetype pal;  
+   int i, ht, y, xmax;  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   /* grab a copy of the palette */  
+   getpalette(&pal);  
+
+   /* create gray scale */  
+   for (i=0; i<pal.size; i++)  
+      setrgbpalette(pal.colors[i], i*4, i*4, i*4);  
+
+   /* display the gray scale */  
+   ht = getmaxy() / 16;  
+   xmax = getmaxx();  
+   y = 0;  
+   for (i=0; i<pal.size; i++)  
+   {  
+      setfillstyle(SOLID_FILL, i);  
+      bar(0, y, xmax, y+ht);  
+      y += ht;  
+   }  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: settextjustify  
+功  能: 为图形函数设置文本的对齐方式  
+用  法: void far settextjustify(int horiz, int vert);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+/* function prototype */  
+void xat(int x, int y);  
+
+/* horizontal text justification settings */  
+char *hjust[] = { "LEFT_TEXT",  
+                  "CENTER_TEXT",  
+                  "RIGHT_TEXT"  
+                };  
+
+/* vertical text justification settings */  
+char *vjust[] = { "LEFT_TEXT",  
+    "CENTER_TEXT",  
+    "RIGHT_TEXT"  
+                };  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   int midx, midy, hj, vj;  
+   char msg[80];  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   midx = getmaxx() / 2;  
+   midy = getmaxy() / 2;  
+
+   /* loop through text justifications */  
+   for (hj=LEFT_TEXT; hj<=RIGHT_TEXT; hj++)  
+      for (vj=LEFT_TEXT; vj<=RIGHT_TEXT; vj++)  
+      {  
+         cleardevice();  
+         /* set the text justification */  
+         settextjustify(hj, vj);  
+
+         /* create a message string */  
+         sprintf(msg, "%s  %s", hjust[hj], vjust[vj]);  
+
+  /* create cross hairs on the screen */  
+  xat(midx, midy);  
+
+         /* output the message */  
+         outtextxy(midx, midy, msg);  
+         getch();  
+      }  
+
+   /* clean up */  
+   closegraph();  
+   return 0;  
+}  
+
+/* draw an "x" at (x, y) */  
+void xat(int x, int y)  
+{  
+  line(x-4, y, x+4, y);  
+  line(x, y-4, x, y+4);  
+}  
+   
+   
+
+函数名: settextstyle  
+功  能: 为图形输出设置当前的文本属性  
+用  法: void far settextstyle (int font, int direction, char size);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+/* the names of the text styles supported */  
+char *fname[] = { "DEFAULT font",  
+                  "TRIPLEX font",  
+                  "SMALL font",  
+                  "SANS SERIF font",  
+                  "GOTHIC font"  
+                };  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   int style, midx, midy;  
+   int size = 1;  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   midx = getmaxx() / 2;  
+   midy = getmaxy() / 2;  
+
+   settextjustify(CENTER_TEXT, CENTER_TEXT);  
+
+   /* loop through the available text styles */  
+   for (style=DEFAULT_FONT; style<=GOTHIC_FONT; style++)  
+   {  
+      cleardevice();  
+      if (style == TRIPLEX_FONT)  
+         size = 4;  
+
+      /* select the text style */  
+      settextstyle(style, HORIZ_DIR, size);  
+
+      /* output a message */  
+      outtextxy(midx, midy, fname[style]);  
+      getch();  
+   }  
+
+   /* clean up */  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: settextstyle  
+功  能: 为图形输出设置当前的文本属性  
+用  法: void far settextstyle (int font, int direction, char size);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+/* the names of the text styles supported */  
+char *fname[] = { "DEFAULT font",  
+                  "TRIPLEX font",  
+                  "SMALL font",  
+                  "SANS SERIF font",  
+                  "GOTHIC font"  
+                };  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   int style, midx, midy;  
+   int size = 1;  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   midx = getmaxx() / 2;  
+   midy = getmaxy() / 2;  
+
+   settextjustify(CENTER_TEXT, CENTER_TEXT);  
+
+   /* loop through the available text styles */  
+   for (style=DEFAULT_FONT; style<=GOTHIC_FONT; style++)  
+   {  
+      cleardevice();  
+      if (style == TRIPLEX_FONT)  
+         size = 4;  
+
+      /* select the text style */  
+      settextstyle(style, HORIZ_DIR, size);  
+
+      /* output a message */  
+      outtextxy(midx, midy, fname[style]);  
+      getch();  
+   }  
+
+   /* clean up */  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: settime  
+功  能: 设置系统时间  
+用  法: void settime(struct time *timep);  
+程序例:  
+
+#include <stdio.h>  
+#include <dos.h>  
+
+int main(void)  
+{  
+   struct  time t;  
+
+   gettime(&t);  
+   printf("The current minute is: %d\n", t.ti_min);  
+   printf("The current hour is: %d\n", t.ti_hour);  
+   printf("The current hundredth of a second is: %d\n", t.ti_hund);  
+   printf("The current second is: %d\n", t.ti_sec);  
+
+   /* Add one to the minutes struct element and then call settime  */  
+   t.ti_min++;  
+   settime(&t);  
+
+   return 0;  
+}  
+   
+   
+
+函数名: setusercharsize  
+功  能: 为矢量字体改变字符宽度和高度  
+用  法: void far setusercharsize(int multx, int dirx, int multy, int diry);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* request autodetection */  
+   int gdriver = DETECT, gmode, errorcode;  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)      /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1);                 /* terminate with an error code */  
+   }  
+
+   /* select a text style */  
+   settextstyle(TRIPLEX_FONT, HORIZ_DIR, 4);  
+
+   /* move to the text starting position */  
+   moveto(0, getmaxy() / 2);  
+
+   /* output some normal text */  
+   outtext("Norm ");  
+
+   /* make the text 1/3 the normal width */  
+   setusercharsize(1, 3, 1, 1);  
+   outtext("Short ");  
+
+   /* make the text 3 times normal width */  
+   setusercharsize(3, 1, 1, 1);  
+   outtext("Wide");  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  
+   
+
+函数名: setvbuf  
+功  能: 把缓冲区与流相关  
+用  法: int setvbuf(FILE *stream, char *buf, int type, unsigned size);  
+程序例:  
+
+#include <stdio.h>  
+
+int main(void)  
+{  
+   FILE *input, *output;  
+   char bufr[512];  
+
+   input = fopen("file.in", "r+b");  
+   output = fopen("file.out", "w");  
+
+   /* set up input stream for minimal disk access,  
+      using our own character buffer */  
+   if (setvbuf(input, bufr, _IOFBF, 512) != 0)  
+      printf("failed to set up buffer for input file\n");  
+   else  
+      printf("buffer set up for input file\n");  
+
+   /* set up output stream for line buffering using space that  
+      will be obtained through an indirect call to malloc */  
+   if (setvbuf(output, NULL, _IOLBF, 132) != 0)  
+      printf("failed to set up buffer for output file\n");  
+   else  
+      printf("buffer set up for output file\n");  
+
+   /* perform file I/O here */  
+
+   /* close files */  
+   fclose(input);  
+   fclose(output);  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: setvect  
+功  能: 设置中断矢量入口  
+用  法: void setvect(int intr_num, void interrupt(*isr)());  
+程序例:  
+
+/***NOTE:  
+    This is an interrupt service routine.  You can NOT compile this  
+    program with Test Stack Overflow turned on and get an executable  
+    file which will operate correctly. */  
+
+#include <stdio.h>  
+#include <dos.h>  
+#include <conio.h>  
+
+#define INTR 0X1C    /* The clock tick interrupt */  
+
+void interrupt ( *oldhandler)(void);  
+
+int count=0;  
+
+void interrupt handler(void)  
+{  
+/* increase the global counter */  
+   count++;  
+
+/* call the old routine */  
+   oldhandler();  
+}  
+
+int main(void)  
+{  
+/* save the old interrupt vector */  
+   oldhandler = getvect(INTR);  
+
+/* install the new interrupt handler */  
+   setvect(INTR, handler);  
+
+/* loop until the counter exceeds 20 */  
+   while (count < 20)  
+      printf("count is %d\n",count);  
+
+/* reset the old interrupt handler */  
+   setvect(INTR, oldhandler);  
+
+   return 0;  
+}  
+   
+   
+
+函数名: setverify  
+功  能: 设置验证状态  
+用  法: void setverify(int value);  
+程序例:  
+
+#include <stdio.h>  
+#include <conio.h>  
+#include <dos.h>  
+
+int main(void)  
+{  
+   int verify_flag;  
+
+   printf("Enter 0 to set verify flag off\n");  
+   printf("Enter 1 to set verify flag on\n");  
+
+   verify_flag = getch() - 0;  
+
+   setverify(verify_flag);  
+
+   if (getverify())  
+      printf("DOS verify flag is on\n");  
+   else  
+      printf("DOS verify flag is off\n");  
+
+   return 0;  
+}  
+   
+   
+
+函数名: setviewport  
+功  能: 为图形输出设置当前视口  
+用  法: void far setviewport(int left, int top, int right,  
+        int bottom, int clipflag);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+#define CLIP_ON 1   /* activates clipping in viewport */  
+
+int main(void)  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   setcolor(getmaxcolor());  
+
+   /* message in default full-screen viewport */  
+   outtextxy(0, 0, "* <-- (0, 0) in default viewport");  
+
+   /* create a smaller viewport */  
+   setviewport(50, 50, getmaxx()-50, getmaxy()-50, CLIP_ON);  
+
+   /* display some text */  
+   outtextxy(0, 0, "* <-- (0, 0) in smaller viewport");  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: setvisualpage  
+功  能: 设置可见图形页号  
+用  法: void far setvisualpage(int pagenum);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main(void)  
+{  
+   /* select a driver and mode that supports */  
+   /* multiple pages.                        */  
+   int gdriver = EGA, gmode = EGAHI, errorcode;  
+   int x, y, ht;  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   x = getmaxx() / 2;  
+   y = getmaxy() / 2;  
+   ht = textheight("W");  
+
+   /*  select the off screen page for drawing */  
+   setactivepage(1);  
+
+   /* draw a line on page #1 */  
+   line(0, 0, getmaxx(), getmaxy());  
+
+   /* output a message on page #1 */  
+   settextjustify(CENTER_TEXT, CENTER_TEXT);  
+   outtextxy(x, y, "This is page #1:");  
+   outtextxy(x, y+ht, "Press any key to halt:");  
+
+   /* select drawing to page #0 */  
+   setactivepage(0);  
+
+   /* output a message  on page #0 */  
+   outtextxy(x, y, "This is page #0.");  
+   outtextxy(x, y+ht, "Press any key to view page #1:");  
+   getch();  
+
+   /* select page #1 as the visible page */  
+   setvisualpage(1);  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: setwritemode  
+功  能: 设置图形方式下画线的输出模式  
+用  法: void far setwritemode(int mode);  
+程序例:  
+
+#include <graphics.h>  
+#include <stdlib.h>  
+#include <stdio.h>  
+#include <conio.h>  
+
+int main()  
+{  
+   /* request auto detection */  
+   int gdriver = DETECT, gmode, errorcode;  
+   int xmax, ymax;  
+
+   /* initialize graphics and local variables */  
+   initgraph(&gdriver, &gmode, "");  
+
+   /* read result of initialization */  
+   errorcode = graphresult();  
+   if (errorcode != grOk)  /* an error occurred */  
+   {  
+      printf("Graphics error: %s\n", grapherrormsg(errorcode));  
+      printf("Press any key to halt:");  
+      getch();  
+      exit(1); /* terminate with an error code */  
+   }  
+
+   xmax = getmaxx();  
+   ymax = getmaxy();  
+
+   /* select XOR drawing mode */  
+   setwritemode(XOR_PUT);  
+
+   /* draw a line */  
+   line(0, 0, xmax, ymax);  
+   getch();  
+
+   /* erase the line by drawing over it */  
+   line(0, 0, xmax, ymax);  
+   getch();  
+
+   /* select overwrite drawing mode */  
+   setwritemode(COPY_PUT);  
+
+   /* draw a line */  
+   line(0, 0, xmax, ymax);  
+
+   /* clean up */  
+   getch();  
+   closegraph();  
+   return 0;  
+}  
+   
+   
+
+函数名: signal  
+功  能: 设置某一信号的对应动作  
+用  法: int signal(int sig, sigfun fname);  
+程序例:  
+
+/* This example installs a signal handler routine for SIGFPE,  
+   catches an integer overflow condition, makes an adjustment  
+   to AX register, and returns. This example program MAY cause  
+   your computer to crash, and will produce runtime errors  
+   depending on which memory model is used.  
+*/  
+
+#pragma inline  
+#include <stdio.h>  
+#include <signal.h>  
+
+void Catcher(int sig, int type, int *reglist)  
+{  
+   printf("Caught it!\n");  
+   *(reglist + 8) = 3;             /* make return AX = 3 */  
+}  
+
+int main(void)  
+{  
+   signal(SIGFPE, Catcher);  
+   asm     mov     ax,07FFFH       /* AX = 32767 */  
+   asm     inc     ax              /* cause overflow */  
+   asm     into                    /* activate handler */  
+
+   /* The handler set AX to 3 on return. If that hadn't happened,  
+      there would have been another exception when the next 'into'  
+      was executed after the 'dec' instruction. */  
+   asm     dec     ax              /* no overflow now */  
+   asm     into                    /* doesn't activate */  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: sin  
+功  能: 正弦函数  
+用  法: double sin(double x);  
+程序例:  
+
+#include <stdio.h>  
+#include <math.h>  
+
+int main(void)  
+{  
+   double result, x = 0.5;  
+
+   result = sin(x);  
+   printf("The sin() of %lf is %lf\n", x, result);  
+   return 0;  
+}  
+   
+   
+
+函数名: sinh  
+功  能: 双曲正弦函数  
+用  法: double sinh(double x);  
+程序例:  
+
+#include <stdio.h>  
+#include <math.h>  
+
+int main(void)  
+{  
+   double result, x = 0.5;  
+
+   result = sinh(x);  
+   printf("The hyperbolic sin() of %lf is %lf\n", x, result);  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: sleep  
+功  能: 执行挂起一段时间  
+用  法: unsigned sleep(unsigned seconds);  
+程序例:  
+
+#include <dos.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   int i;  
+
+   for (i=1; i<5; i++)  
+   {  
+      printf("Sleeping for %d seconds\n", i);  
+      sleep(i);  
+   }  
+   return 0;  
+}  
+   
+   
+   
+
+函数名: sopen  
+功  能: 打开一共享文件  
+用  法: int sopen(char *pathname, int access, int shflag, int permiss);  
+程序例:  
+
+#include <io.h>  
+#include <fcntl.h>  
+#include <sys\stat.h>  
+#include <process.h>  
+#include <share.h>  
+#include <stdio.h>  
+
+int main(void)  
+{  
+   int handle;  
+   int status;  
+
+   handle = sopen("c:\\autoexec.bat", O_RDONLY, SH_DENYNO, S_IREAD);  
+
+   if (!handle)  
+   {  
+      printf("sopen failed\n");  
+      exit(1);  
+   }  
+
+   status = access("c:\\autoexec.bat", 6);  
+   if (status == 0)  
+      printf("read/write access allowed\n");  
+   else  
+      printf("read/write access not allowed\n");  
+
+   close(handle);  
+   return 0;  
+}  
